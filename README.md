@@ -4,7 +4,7 @@ This is a Canvas Peripheral tool that have features doesn't supported by Canvas 
 instructors and subaccounts of canvas can do it them self via CCM. Features include
 1. Creating section, groups adding user to those
 2. Adding non-institution user to a course site
-3. Cross listing sessions in a course
+3. Cross listing sections in a course
 
 This is a rewrite of the tool  https://github.com/tl-its-umich-edu/canvas_course_manager
 
