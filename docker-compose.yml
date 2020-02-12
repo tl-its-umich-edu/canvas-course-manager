@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+
+  db:
+    image: mysql:5.7.22
+    restart: on-failure
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    ports:
+      - "5307:3306"
+    env_file:
+      - .env
+    volumes:
+      - ./.data/mysql:/var/lib/mysql:delegated
+    container_name: canvas_course_manager_mysql
+  web:
+    build:
+     context: .
+     args:
+       TZ: ${TZ}
+    command: bash -c "./start.sh"
+    volumes:
+      - .:/code:delegated
+      # use the container's node_modules folder (don't override)
+      - /code/node_modules/
+      - /code/static/
+      - ${HOME}/ccmsecrets:/secrets
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db
+      - ccm_webpackwatcher
+    env_file:
+      - .env
+    environment:
+      - GUNICORN_RELOAD=True
+      - LOCALHOST_PORT=8001
+    container_name: canvas_course_manager
+  ccm_webpackwatcher:
+    build:
+      context: .
+      target: node-webpack1
+    command: sh -c "tar zxvf node_modules/all_symlinks.tgz && npm run watch"
+    volumes:
+      - .:/usr/src/app:delegated
+      # use the container's node_modules folder (don't override)
+      - /usr/src/app/node_modules/
+    container_name: ccm_webpackwatcher
