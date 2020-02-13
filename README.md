@@ -27,3 +27,7 @@ This Project is still work in progress.
 4. Adding support for CSP
 5. Storing the course information from LTI launch to some session beyond request/response cycle
 
+### Issues
+1. `ERROR: for web  UnixHTTPConnectionPool(host='localhost', port=None): Read timed out.` if this error is accuring then this is possibly due to runnning lot of docker container. Restart the docker or increase Memory usage for docker as suggested here
+https://github.com/docker/compose/issues/3927
+
