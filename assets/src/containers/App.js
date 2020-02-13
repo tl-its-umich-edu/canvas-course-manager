@@ -1,14 +1,11 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import Source from './Source'
-import Another from './Another'
+import Header from '../components/Header'
 
 function App () {
   return (
     <div className='App'>
-      <h1>Canvas Course Manager</h1>
-      <Source />
-      <Another />
+      <Header />
     </div>
   )
 }
