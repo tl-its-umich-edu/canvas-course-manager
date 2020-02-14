@@ -24,5 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.HomePageView.as_view(), name='home'), # Notice the URL has been named
     path('lti/', include('django_lti_auth.urls')),
+    path('isAdmin/', views.get_check_if_admin, name='get_check_if_admin'),
+    path('sendAdminTask/', views.admin_task, name='admin_task'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
