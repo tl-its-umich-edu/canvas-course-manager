@@ -7,6 +7,8 @@ module.exports = {
     path: path.join(__dirname, 'assets/dist'),
     filename: '[name]-[hash].js'
   },
+  // TODO: configure this is true based on dev/prod instance
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
