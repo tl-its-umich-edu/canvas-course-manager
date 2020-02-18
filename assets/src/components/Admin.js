@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 function Admin () {
   const classes = useStyles()
   const [task, setTask] = useState('')
-  const [postedData, setPostedData] = useState(false)
+  const [postedData, setPostedData] = useState({})
   const [loaded, error, info] = useGetFetch('/isAdmin/')
   if (error) return (<div>Did not fetch any data</div>)
 
@@ -42,7 +42,7 @@ function Admin () {
     }).then(handleError)
       .then(res => res.json())
       .then(data => {
-        setPostedData(data.resp)
+        setPostedData(data)
       }).catch(error => setPostedData(error.message))
   }
 
@@ -65,7 +65,7 @@ function Admin () {
             </Select>
           </FormControl>
         </div>
-        {postedData ? <div> Admin Task '{task}' is in Progress, will update once done</div> : ''}
+        {Object.entries(postedData).length !== 0 ? <div> Admin Task '{task}' is in Progress for course {postedData.course_id}, will update once done</div> : ''}
       </>
   )
 }

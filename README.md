@@ -53,10 +53,6 @@ This Project is still work in progress.
     c. sudo chmod +x /usr/local/bin/docker-compose
     d. sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 9. Install Git.
- 
-
-#### Task list
-5. Storing the course information from LTI launch to some session beyond request/response cycle
 
 ### Issues
 1. `ERROR: for web  UnixHTTPConnectionPool(host='localhost', port=None): Read timed out.` if this error is occurring then 
