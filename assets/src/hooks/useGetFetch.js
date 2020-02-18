@@ -27,7 +27,6 @@ const useGetFetch = (url) => {
       })
       .catch(error => setError(error))
   }, [url])
-  console.log(`${error} : ${data} : ${loaded}`)
   return [loaded, error, data]
 }
 
