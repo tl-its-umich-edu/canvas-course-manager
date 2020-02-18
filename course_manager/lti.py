@@ -17,6 +17,7 @@ RANDOM_PASSWORD_DEFAULT_LENGTH = 32
 
 
 def valid_lti_request(user_payload, request):
+    logger.info(valid_lti_request.__name__)
     username = user_payload.get("custom_canvas_user_login_id", None)
     email = user_payload.get("lis_person_contact_email_primary", None)
     canvas_course_id = user_payload.get("custom_canvas_course_id", None)

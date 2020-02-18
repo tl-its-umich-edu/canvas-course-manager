@@ -161,7 +161,40 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'npm.finders.NpmFinder',
 )
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    # Gunicorns logging format https://github.com/benoitc/gunicorn/blob/19.x/gunicorn/glogging.py
+    'formatters': {
+        "generic": {
+            "format": "%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d] %(message)s",
+            "datefmt": "[%Y-%m-%d %H:%M:%S %z]",
+            "class": "logging.Formatter",
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'generic',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': False,
+            'level': 'INFO',
+        },
+        '': {
+            'level': 'WARNING',
+            'handlers': ['console'],
+        },
 
+    },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console']
+    },
+}
 print(PYLTI_CONFIG)
 # CSP = {
 #     "REPORT_ONLY": True,
