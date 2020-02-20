@@ -21,6 +21,7 @@ def valid_lti_request(user_payload, request):
     username = user_payload.get("custom_canvas_user_login_id", None)
     email = user_payload.get("lis_person_contact_email_primary", None)
     canvas_course_id = user_payload.get("custom_canvas_course_id", None)
+    canvas_course_sis_id = user_payload.get("lis_course_offering_sourcedid", None)
     first_name = user_payload.get("lis_person_name_given", None)
     last_name = user_payload.get("lis_person_name_family", None)
 
@@ -34,6 +35,7 @@ def valid_lti_request(user_payload, request):
         user_obj.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user_obj)
         request.session['course_id'] = canvas_course_id
+        request.session['course_sis_id'] = canvas_course_sis_id
     else:
         # handle no username from LTI launch
         raise LTIException("No username supplied in the launch, you should check your provider and/or settings.")
