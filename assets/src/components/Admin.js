@@ -14,7 +14,6 @@ const useStyles = makeStyles(theme => ({
   button: {
     display: 'block',
     marginTop: theme.spacing(1),
-    minWidth: 120
   },
   formControl: {
     margin: theme.spacing(1),
@@ -54,13 +53,14 @@ function Admin () {
     const csv = event.target.files[0]
     const formData = new FormData()
     formData.append('csvData', csv)
-    fetch('/csvImportEndpoint/', {
+    fetch('/routeSectionData/', {
       method: 'POST',
       body: formData
     })
       .then(handleError)
       .then(res => res.json())
       .then(response => {
+        console.log(response)
         // If response is okay return info that file was received
         // set visibility to file upload field false again?
       }).catch(error => setPostedData(error.message))
@@ -93,12 +93,10 @@ function Admin () {
             />
           {csvButtonVisibility &&
           <label htmlFor="upload-csv">
-            <Button variant="contained" component="span">Upload</Button>
+            <Button variant="contained" component="span" className={classes.button}>Upload</Button>
           </label>
           }
-        </div>{console.log(csvButtonVisibility)}
-
-
+        </div>
 
         {Object.entries(postedData).length !== 0 ? <div> Admin Task '{task}' is in Progress for course {postedData.course_id}, will update once done</div> : ''}
       </>
