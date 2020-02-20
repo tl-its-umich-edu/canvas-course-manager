@@ -15,13 +15,15 @@ This Project is still work in progress.
 
 ### Build and Running instructions
 1. rename `.env.sample` to `.env` 
+   1. fill in a random strig for DJANGO_SECRET_KEY
+   2. provide CANVAS_INSTANCE url, e.g. `CANVAS_INSTANCE=https://psu.test.instructure.com`
 2. `docker-compose build`
 3. `docker-compose up`
 ## LTI tool configuration
  Install NGrok. This is needed so Canvas can get an https to your localhost
-1. On OSX you can install with homebrew brew cask install ngrok or with their package.
-2. It looks like npm install -g ngrok might also work
-3. Start ngrok with ngrok http 8001
+1. On OSX you can install with homebrew `brew cask install ngrok` or with their package.
+2. It looks like `npm install -g ngrok` might also work
+3. Start ngrok with `ngrok http 8001`
    1. This forwards http to 8001, it will have a bunch of logging information.
    2. It also opens a neat request inspection interface to aid with debugging at http://localhost:4040 
 4. Now try to test it!
@@ -37,6 +39,8 @@ This Project is still work in progress.
    2. click on add App and select `paste.xml` and paste the XML generated from step 4
    3. Name the tool as you want and give consumer key as `key` and consumer secret as `secret`. Save and reload canvas
       to see the tool. and Click the tool to launch
+6. Setup LTI launch paarameter to make variables availalbe
+   1. Canvas -> Course -> Settings -> Apps -> View App Configurations -> your app -> Edit -> add "Canvas.course.sisSourceId" to Custom Fields
 
 ## Intalling CCM setup for windows user especially docker
 1. Disable Hyper-V on Windows.
