@@ -1,13 +1,9 @@
 from django.shortcuts import render
-
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView  # Import TemplateView
 import json, logging
-
-from canvasapi import Canvas, Account
-
 import pandas as pd
 
 logger = logging.getLogger(__name__)
