@@ -195,7 +195,7 @@ LOGGING = {
         'handlers': ['console']
     },
 }
-print(PYLTI_CONFIG)
+# print(PYLTI_CONFIG)
 # CSP = {
 #     "REPORT_ONLY": True,
 #     "DEFAULT_SRC": ["'self'","example.edu"],
@@ -224,7 +224,9 @@ print(PYLTI_CONFIG)
 #     globals()["CSP_"+csp_key] = csp_val
 
 # MIDDLEWARE += ['csp.middleware.CSPMiddleware',]
-CANVAS_INSTANCE=os.getenv('CANVAS_INSTANCE')
+CANVAS_INSTANCE = os.getenv('CANVAS_INSTANCE')
+CANVAS_ROOT_ACCOUNT_ID = os.getenv('CANVAS_ROOT_ACCOUNT_ID')
+CANVAS_API_TOKEN = os.getenv('CANVAS_API_TOKEN')
 
 CSRF_COOKIE_SECURE = True
 X_FRAME_OPTIONS=f'ALLOW-FROM {CANVAS_INSTANCE}'

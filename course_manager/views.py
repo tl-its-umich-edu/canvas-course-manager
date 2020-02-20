@@ -1,11 +1,14 @@
 from django.shortcuts import render
 
-# Create your views here.
-from django.shortcuts import render
+from django.conf import settings
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.views.generic import TemplateView  # Import TemplateView
-import json
-import logging
+import json, logging
+
+from canvasapi import Canvas, Account
+
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -35,4 +38,20 @@ def admin_task(request):
     task = json.loads(request.body.decode("utf-8"))
     logger.info(f"Admin Task perfomed is {task}")
     course_id = request.session['course_id']
+    return HttpResponse(json.dumps({'resp': True, 'course_id': course_id}))
+
+
+def route_section_data(request):
+    """
+    This view will receive POST section data from the React frontend and then submits a POST to the Canvas API
+    :param request:
+    :return: HttpResponse
+    """
+    
+    # Parse section data from the front end
+    logger.debug(route_section_data.__name__)
+    request_body = json.loads(request.body.decode("utf-8"))
+    logger.debug(request_body)
+    course_id = request.session['course_id']
+
     return HttpResponse(json.dumps({'resp': True, 'course_id': course_id}))
