@@ -1,10 +1,18 @@
+# standard libraries
+import json, logging
+from datetime import datetime
+
+# Django libraries
 from django.shortcuts import render
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView  # Import TemplateView
-import json, logging
+
+# third-party libraries
 import pandas as pd
+from canvasapi import Canvas
+import io
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +54,33 @@ def route_section_data(request):
     
     # Parse section data from the front end
     logger.debug(route_section_data.__name__)
-    logger.info(request.POST['data'])
-    course_id = request.session['course_id']
+    data_ = request.POST['data']
+    logger.info(data_)
+    course_sis_id = request.session['course_sis_id']
 
-    return HttpResponse(json.dumps({'resp': True, 'course_id': course_id}))
+    # logger.debug(request_body['task'])
+    # sections_data = request_body['data']
+    # logger.debug(sections_data)
+
+    sections_df = pd.DataFrame(json.loads(data_))
+    logger.debug(sections_df.head())
+
+    # Add timestamp and 'CCM' to section ids
+    append_timestamp = (lambda x: f'{x}_{datetime.now().isoformat(timespec="milliseconds")}_CCM')
+    sections_df['section_id'] = sections_df['section_id'].map(append_timestamp)
+
+    # Add status and course_sis_id
+    sections_df = sections_df.assign(**{
+      'status': 'active',
+      'course_id': course_sis_id
+    })
+    logger.debug(sections_df.head())
+
+    csv_binary_str = sections_df.to_csv()
+    output = io.StringIO(csv_binary_str)
+    canvas_instance = Canvas(settings.CANVAS_INSTANCE, settings.CANVAS_API_TOKEN)
+    account = canvas_instance.get_account(1)
+    resp = account.create_sis_import(output)
+    logger.debug(resp.id)
+    logger.debug(resp.workflow_state)
+    return HttpResponse(json.dumps({'resp': True, 'course_sis_id': course_sis_id}))
