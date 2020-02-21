@@ -56,12 +56,12 @@ function Admin () {
 
   const handleFileUpload = event => {
     const csv = event.target.files[0]
-    debugger
+    // debugger
     csv.text().then(data => {
       const formData = new FormData()
       formData.append('task', task)
       formData.append('data', data)
-      debugger
+      // debugger
       return fetch('/routeSectionData/', {
         headers: {
           Accept: 'application/json',
