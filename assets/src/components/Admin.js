@@ -12,9 +12,15 @@ import parse from 'csv-parse/lib/sync'
 import handleError from '../utils/apiUtils'
 
 // Allow for switching routes dependent on selected task
-const routes = {
-  createSections: '/routeSectionData/',
-  addUsersToSection: '/routeSectionData/'
+const taskDefinitions = {
+  createSections: {
+    route: '/routeSectionData/',
+    columns: ['id_prefix', 'name']
+  },
+  addUsersToSection: {
+    route: '/routeSectionData/',
+    columns: ['role', 'user_id', 'section_id']
+  }
 }
 
 const useStyles = makeStyles(theme => ({
@@ -36,24 +42,31 @@ function Admin () {
   const [loaded, error, info] = useGetFetch('/isAdmin/')
   if (error) return (<div>Did not fetch any data</div>)
 
-  useEffect(() => {
-    console.log(task)
-  })
+  // useEffect(() => {
+  //   console.log(task)
+  // })
 
   const handleAdminTaskFilter = event => {
     const value = event.target.value
     setTask(value)
-    setCsvButtonVisibility(value in routes)
+    setCsvButtonVisibility(value in taskDefinitions)
   }
 
   const handleFileUpload = event => {
     const csv = event.target.files[0]
     csv.text().then(data => {
       const formData = new FormData()
-      const parsedData = parse(data, {columns: true});
+      let parsedData
+      try { parsedData = parse(data, {
+        columns: taskDefinitions[task].columns, from_line: 2});
+      }
+      catch(err){
+        console.log(err)
+      }
+
       formData.append('task', task)
-      formData.append('data', parsedData)
-      return fetch(routes[task], {
+      formData.append('data', JSON.stringify(parsedData))
+      return fetch(taskDefinitions[task].route, {
         headers: {
           Accept: 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
