@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import useGetFetch from '../hooks/useGetFetch'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -29,33 +29,48 @@ function Admin () {
   const [loaded, error, info] = useGetFetch('/isAdmin/')
   if (error) return (<div>Did not fetch any data</div>)
 
+  useEffect(() => {
+    console.log(task)
+  })
+
   const handleAdminTaskFilter = event => {
     const value = event.target.value
     setTask(value)
     setCsvButtonVisibility(value === 'createSections' || value === 'addUsersToSection')
-    fetch('/sendAdminTask/', {
-      headers: {
-        Accept: 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': Cookie.get('csrftoken')
-      },
-      credentials: 'include',
-      body: JSON.stringify(value),
-      method: 'POST'
-    }).then(handleError)
-      .then(res => res.json())
-      .then(data => {
-        setPostedData(data)
-      }).catch(error => setPostedData(error.message))
+
+    // fetch('/sendAdminTask/', {
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'X-Requested-With': 'XMLHttpRequest',
+    //     'X-CSRFToken': Cookie.get('csrftoken')
+    //   },
+    //   credentials: 'include',
+    //   body: JSON.stringify(value),
+    //   method: 'POST'
+    // }).then(handleError)
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     setPostedData(data)
+    //   }).catch(error => setPostedData(error.message))
   }
 
   const handleFileUpload = event => {
     const csv = event.target.files[0]
-    const formData = new FormData()
-    formData.append('csvData', csv)
-    fetch('/routeSectionData/', {
-      method: 'POST',
-      body: formData
+    debugger
+    csv.text().then(data => {
+      const formData = new FormData()
+      formData.append('task', task)
+      formData.append('data', data)
+      debugger
+      return fetch('/routeSectionData/', {
+        headers: {
+          Accept: 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': Cookie.get('csrftoken')
+        },
+        method: 'POST',
+        body: formData
+      })
     })
       .then(handleError)
       .then(res => res.json())
