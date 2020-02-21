@@ -8,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import Typography from '@material-ui/core/Typography'
 import Cookie from 'js-cookie'
+import parse from 'csv-parse/lib/sync'
 import handleError from '../utils/apiUtils'
 
 // Allow for switching routes dependent on selected task
@@ -47,18 +48,18 @@ function Admin () {
 
   const handleFileUpload = event => {
     const csv = event.target.files[0]
-    // debugger
     csv.text().then(data => {
       const formData = new FormData()
+      const parsedData = parse(data, {columns: true});
       formData.append('task', task)
-      formData.append('data', data)
-      // debugger
-      return fetch('/routeSectionData/', {
+      formData.append('data', parsedData)
+      return fetch(routes[task], {
         headers: {
           Accept: 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
           'X-CSRFToken': Cookie.get('csrftoken')
         },
+        credentials: 'include',
         method: 'POST',
         body: formData
       })
