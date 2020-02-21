@@ -8,7 +8,14 @@ import MenuItem from '@material-ui/core/MenuItem'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import Typography from '@material-ui/core/Typography'
 import Cookie from 'js-cookie'
+import parse from 'csv-parse/lib/sync'
 import handleError from '../utils/apiUtils'
+
+// Allow for switching routes dependent on selected task
+const routes = {
+  createSections: '/routeSectionData/',
+  addUsersToSection: '/routeSectionData/'
+}
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -36,38 +43,23 @@ function Admin () {
   const handleAdminTaskFilter = event => {
     const value = event.target.value
     setTask(value)
-    setCsvButtonVisibility(value === 'createSections' || value === 'addUsersToSection')
-
-    // fetch('/sendAdminTask/', {
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'X-Requested-With': 'XMLHttpRequest',
-    //     'X-CSRFToken': Cookie.get('csrftoken')
-    //   },
-    //   credentials: 'include',
-    //   body: JSON.stringify(value),
-    //   method: 'POST'
-    // }).then(handleError)
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     setPostedData(data)
-    //   }).catch(error => setPostedData(error.message))
+    setCsvButtonVisibility(value in routes)
   }
 
   const handleFileUpload = event => {
     const csv = event.target.files[0]
-    // debugger
     csv.text().then(data => {
       const formData = new FormData()
+      const parsedData = parse(data, {columns: true});
       formData.append('task', task)
-      formData.append('data', data)
-      // debugger
-      return fetch('/routeSectionData/', {
+      formData.append('data', parsedData)
+      return fetch(routes[task], {
         headers: {
           Accept: 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
           'X-CSRFToken': Cookie.get('csrftoken')
         },
+        credentials: 'include',
         method: 'POST',
         body: formData
       })
