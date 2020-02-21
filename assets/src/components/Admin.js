@@ -52,30 +52,27 @@ function Admin () {
     setCsvButtonVisibility(value in taskDefinitions)
   }
 
-  const handleFileUpload = event => {
-    const csv = event.target.files[0]
-    csv.text().then(data => {
-      const formData = new FormData()
-      let parsedData
-      try { parsedData = parse(data, {
-        columns: taskDefinitions[task].columns, from_line: 2});
-      }
-      catch(err){
-        console.log(err)
-      }
-
-      formData.append('task', task)
-      formData.append('data', JSON.stringify(parsedData))
-      return fetch(taskDefinitions[task].route, {
-        headers: {
-          Accept: 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRFToken': Cookie.get('csrftoken')
-        },
-        credentials: 'include',
-        method: 'POST',
-        body: formData
-      })
+  const parseFileAndPost = fileData => {
+    const csvText = fileData.target.result
+    const formData = new FormData()
+    let parsedData
+    try { parsedData = parse(csvText, {
+      columns: taskDefinitions[task].columns, from_line: 2});
+    }
+    catch(err){
+      console.log(err)
+    }
+    formData.append('task', task)
+    formData.append('data', JSON.stringify(parsedData))
+    fetch(taskDefinitions[task].route, {
+      headers: {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': Cookie.get('csrftoken')
+      },
+      credentials: 'include',
+      method: 'POST',
+      body: formData
     })
       .then(handleError)
       .then(res => res.json())
@@ -84,6 +81,13 @@ function Admin () {
         // If response is okay return info that file was received
         // set visibility to file upload field false again?
       }).catch(error => setPostedData(error.message))
+  }
+
+  const handleFileUpload = event => {
+    const csv = event.target.files[0]
+    const reader = new FileReader()
+    reader.onload = parseFileAndPost
+    reader.readAsText(csv)
   }
 
   return (
