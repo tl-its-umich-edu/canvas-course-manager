@@ -2,7 +2,6 @@
 import json, logging
 from datetime import datetime
 
-
 # Django libraries
 from django.shortcuts import render
 from django.conf import settings
@@ -12,9 +11,9 @@ from django.views.generic import TemplateView  # Import TemplateView
 
 # third-party libraries
 import pandas as pd
-from canvasapi import Canvas
-import io
 import requests
+# from canvasapi import Canvas
+# import io
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +49,7 @@ def admin_task(request):
 def route_section_data(request):
     """
     This view will receive POST section data from the React frontend and then submits a POST to the Canvas API
-    :param request:
+    :param: request
     :return: HttpResponse
     """
     
@@ -59,10 +58,6 @@ def route_section_data(request):
     data_ = request.POST['data']
     logger.info(data_)
     course_sis_id = request.session['course_sis_id']
-
-    # logger.debug(request_body['task'])
-    # sections_data = request_body['data']
-    # logger.debug(sections_data)
 
     sections_df = pd.DataFrame(json.loads(data_))
     sections_df = sections_df.rename(columns={'id_prefix': 'section_id'})
@@ -77,9 +72,10 @@ def route_section_data(request):
       'status': 'active',
       'course_id': course_sis_id
     })
-    logger.info(sections_df.head())
 
+    logger.info(sections_df.head())
     csv_binary_str = sections_df.to_csv()
+
     # output = io.StringIO(csv_binary_str)
     # canvas_instance = Canvas(settings.CANVAS_INSTANCE, settings.CANVAS_API_TOKEN)
     # account = canvas_instance.get_account(1)
@@ -89,15 +85,12 @@ def route_section_data(request):
 
     url = f"{settings.CANVAS_INSTANCE}/api/v1/accounts/{settings.CANVAS_ROOT_ACCOUNT_ID}/sis_imports"
 
-
-    payload = csv_binary_str
     headers = {
-    'Content-Type': 'text/plain',
-    'Authorization': f'Bearer {settings.CANVAS_API_TOKEN}'
+      'Content-Type': 'text/plain',
+      'Authorization': f'Bearer {settings.CANVAS_API_TOKEN}'
     }
 
-    response = requests.request("POST", url, headers=headers, data = payload)
-
-    print(response.text.encode('utf8'))
+    response = requests.post(url, headers=headers, data=csv_binary_str)
+    logger.info(response.text.encode('utf8'))
 
     return HttpResponse(json.dumps({'resp': True, 'course_sis_id': course_sis_id}))
