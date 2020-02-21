@@ -10,6 +10,12 @@ import Typography from '@material-ui/core/Typography'
 import Cookie from 'js-cookie'
 import handleError from '../utils/apiUtils'
 
+// Allow for switching routes dependent on selected task
+const routes = {
+  createSections: '/routeSectionData/',
+  addUsersToSection: '/routeSectionData/'
+}
+
 const useStyles = makeStyles(theme => ({
   button: {
     display: 'block',
@@ -36,22 +42,7 @@ function Admin () {
   const handleAdminTaskFilter = event => {
     const value = event.target.value
     setTask(value)
-    setCsvButtonVisibility(value === 'createSections' || value === 'addUsersToSection')
-
-    // fetch('/sendAdminTask/', {
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'X-Requested-With': 'XMLHttpRequest',
-    //     'X-CSRFToken': Cookie.get('csrftoken')
-    //   },
-    //   credentials: 'include',
-    //   body: JSON.stringify(value),
-    //   method: 'POST'
-    // }).then(handleError)
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     setPostedData(data)
-    //   }).catch(error => setPostedData(error.message))
+    setCsvButtonVisibility(value in routes)
   }
 
   const handleFileUpload = event => {
