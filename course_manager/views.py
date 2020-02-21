@@ -46,8 +46,7 @@ def route_section_data(request):
     
     # Parse section data from the front end
     logger.debug(route_section_data.__name__)
-    request_body = json.loads(request.body.decode("utf-8"))
-    logger.debug(request_body)
+    logger.info(request.POST['data'])
     course_id = request.session['course_id']
 
     return HttpResponse(json.dumps({'resp': True, 'course_id': course_id}))
