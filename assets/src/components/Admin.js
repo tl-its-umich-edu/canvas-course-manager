@@ -19,7 +19,7 @@ const taskDefinitions = {
     displayName: 'Section Data'
   },
   addUsersToSection: {
-    route: '/routeSectionData/',
+    route: '/routeUserSectionData/',
     columns: ['role', 'user_id', 'section_id'],
     displayName: 'User Data'
   }
@@ -28,7 +28,7 @@ const taskDefinitions = {
 const useStyles = makeStyles(theme => ({
   button: {
     display: 'block',
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(1)
   },
   formControl: {
     margin: theme.spacing(1),
@@ -41,6 +41,7 @@ function Admin () {
   const [task, setTask] = useState('')
   const [csvButtonVisibility, setCsvButtonVisibility] = useState(false)
   const [postedData, setPostedData] = useState({})
+  const [done, setDone] = useState({})
   const [loaded, error, info] = useGetFetch('/isAdmin/')
   if (error) return (<div>Did not fetch any data</div>)
 
@@ -58,10 +59,11 @@ function Admin () {
     const csvText = fileData.target.result
     const formData = new FormData()
     let parsedData
-    try { parsedData = parse(csvText, {
-      columns: taskDefinitions[task].columns, from_line: 2});
-    }
-    catch(err){
+    try {
+      parsedData = parse(csvText, {
+        columns: taskDefinitions[task].columns, from_line: 2
+      })
+    } catch (err) {
       console.log(err)
     }
     formData.append('task', task)
@@ -80,6 +82,7 @@ function Admin () {
       .then(res => res.json())
       .then(response => {
         console.log(response)
+        setDone(response)
         // If response is okay return info that file was received
         // set visibility to file upload field false again?
       }).catch(error => setPostedData(error.message))
@@ -110,21 +113,28 @@ function Admin () {
               <MenuItem value='addUsersToSection'>Add multiple users to course sections through CSV</MenuItem>
             </Select>
           </FormControl>
-            <input
-              accept="text/csv"
-              id="upload-csv"
-              hidden
-              type="file"
-              onChange={handleFileUpload}
-            />
+          <input
+            accept='text/csv'
+            id='upload-csv'
+            hidden
+            type='file'
+            onChange={handleFileUpload}
+          />
           {csvButtonVisibility &&
-          <label htmlFor="upload-csv">
-            <Button variant="contained" component="span" className={classes.button}>Upload {taskDefinitions[task].displayName} CSV</Button>
-          </label>
-          }
+            <label htmlFor='upload-csv'>
+              <Button
+                variant='contained'
+                component='span'
+                className={classes.button}
+              >
+              Upload {taskDefinitions[task].displayName} CSV
+              </Button>
+            </label>}
         </div>
 
-        {Object.entries(postedData).length !== 0 ? <div> Admin Task '{task}' is in Progress for course {postedData.course_id}, will update once done</div> : ''}
+        {Object.entries(done).length !== 0 ? <div> Admin Task '{task}' is successful and in Progress (tracking
+          id {done.job_tracking_id})
+        </div> : ''}
       </>
   )
 }
