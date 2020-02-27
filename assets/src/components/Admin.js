@@ -15,11 +15,13 @@ import handleError from '../utils/apiUtils'
 const taskDefinitions = {
   createSections: {
     route: '/routeSectionData/',
-    columns: ['id_prefix', 'name']
+    columns: ['id_prefix', 'name'],
+    displayName: 'Section Data'
   },
   addUsersToSection: {
     route: '/routeSectionData/',
-    columns: ['role', 'user_id', 'section_id']
+    columns: ['role', 'user_id', 'section_id'],
+    displayName: 'User Data'
   }
 }
 
@@ -117,7 +119,7 @@ function Admin () {
             />
           {csvButtonVisibility &&
           <label htmlFor="upload-csv">
-            <Button variant="contained" component="span" className={classes.button}>Upload</Button>
+            <Button variant="contained" component="span" className={classes.button}>Upload {taskDefinitions[task].displayName} CSV</Button>
           </label>
           }
         </div>
