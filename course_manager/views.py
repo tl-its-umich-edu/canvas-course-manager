@@ -94,3 +94,39 @@ def route_section_data(request):
     logger.info(response.text.encode('utf8'))
 
     return HttpResponse(json.dumps({'resp': True, 'course_sis_id': course_sis_id}))
+
+
+def route_user_section_data(request):
+    """
+    This view receives POST user and section data from the React frontend and then submits a POST to the Canvas API
+    :param: request
+    :return: HttpResponse
+    """
+    
+    # Parse user section data from the front end
+    logger.debug(route_user_section_data.__name__)
+    data_ = request.POST['data']
+    logger.info(data_)
+    course_sis_id = request.session['course_sis_id']
+  
+    user_section_df = pd.DataFrame(json.loads(data_))
+    logger.info(user_section_df.head())
+
+    # Add status and course_sis_id
+    user_section_df = user_section_df.assign(**{
+      'status': 'active',
+      'course_id': course_sis_id
+    })
+    logger.info(user_section_df.head())
+
+    csv_binary_str = user_section_df.to_csv()
+    url = f"{settings.CANVAS_INSTANCE}/api/v1/accounts/{settings.CANVAS_ROOT_ACCOUNT_ID}/sis_imports"
+    headers = {
+      'Content-Type': 'text/plain',
+      'Authorization': f'Bearer {settings.CANVAS_API_TOKEN}'
+    }
+
+    response = requests.post(url, headers=headers, data=csv_binary_str)
+    logger.info(response.text.encode('utf8'))
+
+    return HttpResponse(json.dumps({'resp': True, 'course_sis_id': course_sis_id}))
