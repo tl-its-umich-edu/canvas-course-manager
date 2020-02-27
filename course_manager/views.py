@@ -91,10 +91,11 @@ def route_section_data(request):
     }
 
     response = requests.post(url, headers=headers, data=csv_binary_str)
+    data_json = json.loads(response.text.encode('utf8'))
+
     logger.info(response.text.encode('utf8'))
 
-    return HttpResponse(json.dumps({'resp': True, 'course_sis_id': course_sis_id}))
-
+    return HttpResponse(json.dumps({'resp': True, 'job_tracking_id': data_json['id']}))
 
 def route_user_section_data(request):
     """
@@ -102,31 +103,34 @@ def route_user_section_data(request):
     :param: request
     :return: HttpResponse
     """
-    
+
     # Parse user section data from the front end
     logger.debug(route_user_section_data.__name__)
     data_ = request.POST['data']
     logger.info(data_)
     course_sis_id = request.session['course_sis_id']
-  
+
     user_section_df = pd.DataFrame(json.loads(data_))
     logger.info(user_section_df.head())
 
     # Add status and course_sis_id
     user_section_df = user_section_df.assign(**{
-      'status': 'active',
-      'course_id': course_sis_id
+        'status': 'active',
+        'course_id': course_sis_id
     })
     logger.info(user_section_df.head())
 
     csv_binary_str = user_section_df.to_csv()
     url = f"{settings.CANVAS_INSTANCE}/api/v1/accounts/{settings.CANVAS_ROOT_ACCOUNT_ID}/sis_imports"
     headers = {
-      'Content-Type': 'text/plain',
-      'Authorization': f'Bearer {settings.CANVAS_API_TOKEN}'
+        'Content-Type': 'text/plain',
+        'Authorization': f'Bearer {settings.CANVAS_API_TOKEN}'
     }
 
     response = requests.post(url, headers=headers, data=csv_binary_str)
-    logger.info(response.text.encode('utf8'))
+    data_json = json.loads(response.text.encode('utf8'))
+    logger.info(data_json)
 
-    return HttpResponse(json.dumps({'resp': True, 'course_sis_id': course_sis_id}))
+    return HttpResponse(json.dumps({'resp': True, 'job_tracking_id': data_json['id']}))
+
+

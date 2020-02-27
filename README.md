@@ -58,6 +58,9 @@ This Project is still work in progress.
     d. sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 9. Install Git.
 
+## Sample csv file for sis process
+1. For bulk creation of section and adding user sample files are in sample_csv folder
+
 ### Issues
 1. `ERROR: for web  UnixHTTPConnectionPool(host='localhost', port=None): Read timed out.` if this error is occurring then 
 this is possibly due to running lot of docker container. Restart the docker or increase Memory usage for docker as 
