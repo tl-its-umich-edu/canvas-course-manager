@@ -27,7 +27,7 @@ This Project is still work in progress.
    1. This forwards http to 8001, it will have a bunch of logging information.
    2. It also opens a neat request inspection interface to aid with debugging at http://localhost:4040 
 4. Now try to test it!
-   1. Go to the XML Config Builder.
+   1. Go to the XML Config Builder,https://www.edu-apps.org/build_xml.html.
    2. Fill in the name, id, description to whatever you want.
    3. The launch URL would look like https://8j94a1326.ngrok.io/lti/auth/
    4. Launch Privacy needs to be Public
@@ -65,4 +65,7 @@ This Project is still work in progress.
 1. `ERROR: for web  UnixHTTPConnectionPool(host='localhost', port=None): Read timed out.` if this error is occurring then 
 this is possibly due to running lot of docker container. Restart the docker or increase Memory usage for docker as 
 suggested here https://github.com/docker/compose/issues/3927
+
+### Contact
+1. Any questions react out to TL-Dev <its.tl.dev@umich.edu>
 
