@@ -67,5 +67,5 @@ this is possibly due to running lot of docker container. Restart the docker or i
 suggested here https://github.com/docker/compose/issues/3927
 
 ### Contact
-1. Any questions react out to TL-Dev <its.tl.dev@umich.edu>
+1. Any questions reach out to TL-Dev <its.tl.dev@umich.edu>
 
